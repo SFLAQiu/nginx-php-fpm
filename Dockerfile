@@ -1,5 +1,4 @@
-#FROM shinegin/php:7.0.18
-FROM php-fast-build 
+FROM shinegin/php:7.0.18
 
 MAINTAINER shineGin <y1076766088@163.com>
 
@@ -186,8 +185,8 @@ RUN apk add --no-cache bash \
     #php -r "if (hash_file('SHA384', 'composer-setup.php') === '${EXPECTED_COMPOSER_SIGNATURE}') { echo 'Composer.phar Installer verified'; } else { echo 'Composer.phar Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     #php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     #php -r "unlink('composer-setup.php');"  && \
-    pip install -U pip && \
-    pip install -U certbot && \
+    pip install -U pip -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
+    pip install -U certbot -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
     mkdir -p /etc/letsencrypt/webrootauth && \
     apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
 #    ln -s /usr/bin/php7 /usr/bin/php
