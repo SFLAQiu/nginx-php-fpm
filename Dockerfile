@@ -1,4 +1,5 @@
-FROM shinegin/php:7.0.18
+#FROM shinegin/php:7.0.18
+FROM php-fast-build 
 
 MAINTAINER shineGin <y1076766088@163.com>
 
@@ -131,11 +132,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+#RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+#RUN echo @testing http://mirrors.aliyun.com/alpine/v3.4/testing >> /etc/apk/repositories && \
 #    sed -i -e "s/v3.4/edge/" /etc/apk/repositories && \
-    echo /etc/apk/respositories && \
-    apk update && \
-    apk add --no-cache bash \
+#    echo /etc/apk/respositories && \
+#RUN apk update && \
+RUN apk add --no-cache bash \
     openssh-client \
     wget \
     supervisor \
