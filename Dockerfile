@@ -1,4 +1,4 @@
-FROM shinegin/php:7.0.18
+FROM shinegin/php:7.0.18-edge
 
 MAINTAINER shineGin <y1076766088@163.com>
 
