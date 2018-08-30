@@ -169,11 +169,11 @@ RUN apk add --no-cache bash \
       --with-jpeg-dir=/usr/include/ && \
     #curl iconv session
     docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache && \
-    curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/php7.zip && \
+    curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
     unzip /tmp/redis.zip && \
     rm -rf /tmp/redis.zip && \
     docker-php-source extract && \
-    mv phpredis-php7 /usr/src/php/ext/redis && \
+    mv phpredis-4.1.1 /usr/src/php/ext/redis && \
     docker-php-ext-install redis && \
     docker-php-source delete && \
     mkdir -p /etc/nginx && \
