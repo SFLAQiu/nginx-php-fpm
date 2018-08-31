@@ -169,7 +169,7 @@ RUN apk add --no-cache bash \
       --with-png-dir=/usr/include/ \
       --with-jpeg-dir=/usr/include/ && \
     #curl iconv session
-    docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache && \
+    docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache bcmath && \
     docker-php-source extract && \
     #curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
     #curl -L -o /tmp/apcu.zip http://pecl.php.net/get/apcu-5.1.12.tgz && \
