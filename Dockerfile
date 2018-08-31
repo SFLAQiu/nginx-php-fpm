@@ -1,4 +1,4 @@
-FROM shinegin/php:7.1.8
+FROM shinegin/php:7.1.8-alpine3.4
 
 MAINTAINER shineGin <y1076766088@163.com>
 
@@ -58,6 +58,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
   && apk add --no-cache --virtual .build-deps \
+    autoconf \
     gcc \
     libc-dev \
     make \
@@ -123,7 +124,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
       | sort -u \
   )" \
   && apk add --no-cache --virtual .nginx-rundeps $runDeps \
-  && apk del .build-deps \
+  #&& apk del .build-deps \
   && apk del .gettext \
   && mv /tmp/envsubst /usr/local/bin/ \
   \
@@ -169,13 +170,20 @@ RUN apk add --no-cache bash \
       --with-jpeg-dir=/usr/include/ && \
     #curl iconv session
     docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache && \
-    curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
-    unzip /tmp/redis.zip && \
-    rm -rf /tmp/redis.zip && \
+    #curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
+    #curl -L -o /tmp/apcu.zip http://pecl.php.net/get/apcu-5.1.12.tgz && \
+    #unzip /tmp/redis.zip && \
+    #tar xzvf /tmp/apcu.tgz && \
+    #rm -rf /tmp/redis.zip && \
+    #rm -rf /tmp/apcu.tgz && \
     docker-php-source extract && \
-    mv phpredis-4.1.1 /usr/src/php/ext/redis && \
-    docker-php-ext-install redis && \
-    docker-php-source delete && \
+    cp /usr/src/php/php.ini-development /usr/local/etc/php/php.ini \
+    pear config-set php_ini /usr/local/etc/php/php.ini \ 
+    #mv phpredis-4.1.1 /usr/src/php/ext/redis && \
+    #mv apcu-5.1.12 /usr/src/php/ext/apcu && \
+    #docker-php-ext-install redis && \
+    #docker-php-ext-install apcu && \
+    #docker-php-source delete && \
     mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
     mkdir -p /run/nginx && \
@@ -188,8 +196,12 @@ RUN apk add --no-cache bash \
     pip install -U pip -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
     pip install -U certbot -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
     mkdir -p /etc/letsencrypt/webrootauth && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
+    #apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
 #    ln -s /usr/bin/php7 /usr/bin/php
+    pecl install apcu \
+    pecl install redis \
+    pecl install xdebug \
+    pecl install protobuf
 
 ADD conf/supervisord.conf /etc/supervisord.conf
 
