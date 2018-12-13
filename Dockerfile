@@ -169,7 +169,8 @@ RUN apk add --no-cache bash \
       --with-png-dir=/usr/include/ \
       --with-jpeg-dir=/usr/include/ && \
     #curl iconv session
-    docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache bcmath && \
+    #docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache bcmath && \
+    docker-php-ext-install pdo_mysql pdo_sqlite mysqli gd exif intl xsl json soap dom zip opcache bcmath && \
     docker-php-source extract && \
     #curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
     #curl -L -o /tmp/apcu.zip http://pecl.php.net/get/apcu-5.1.12.tgz && \
@@ -191,10 +192,8 @@ RUN apk add --no-cache bash \
     #php -r "if (hash_file('SHA384', 'composer-setup.php') === '${EXPECTED_COMPOSER_SIGNATURE}') { echo 'Composer.phar Installer verified'; } else { echo 'Composer.phar Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     #php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     #php -r "unlink('composer-setup.php');"  && \
-    #pip install -U pip -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
-    #pip install -U certbot -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
-    pip install -U pip && \
-    pip install -U certbot && \
+    pip install -U pip -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
+    pip install -U certbot -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
     mkdir -p /etc/letsencrypt/webrootauth && \
     #apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
 #    ln -s /usr/bin/php7 /usr/bin/php
