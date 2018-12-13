@@ -1,4 +1,4 @@
-FROM shinegin/php:7.1.8-alpine3.4
+FROM shinegin/php-dev:7.2
 
 MAINTAINER shineGin <y1076766088@163.com>
 
@@ -216,6 +216,7 @@ mkdir -p /etc/nginx/ssl/ && \
 rm -Rf /var/www/* && \
 mkdir /var/www/html/
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD conf/nginx-site-my.conf /etc/nginx/sites-available/my.conf
 ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
