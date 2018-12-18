@@ -1,10 +1,6 @@
-FROM shinegin/php-dev:7.2
+FROM alpine:3.4
 
 MAINTAINER shineGin <y1076766088@163.com>
-
-ENV php_conf /usr/local/etc/php-fpm.conf
-ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
-ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 
 ENV NGINX_VERSION 1.12.0
 
@@ -138,7 +134,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 #    echo /etc/apk/respositories && \
 #RUN apk update && \
 RUN apk add --no-cache bash \
-    openssh-client \
     wget \
     supervisor \
     curl \
@@ -154,35 +149,10 @@ RUN apk add --no-cache bash \
     gcc \
     musl-dev \
     linux-headers \
-    libmcrypt-dev \
-    libpng-dev \
     icu-dev \
     libpq \
     libxslt-dev \
     libffi-dev \
-    freetype-dev \
-    sqlite-dev \
-    libjpeg-turbo-dev && \
-    docker-php-ext-configure gd \
-      --with-gd \
-      --with-freetype-dir=/usr/include/ \
-      --with-png-dir=/usr/include/ \
-      --with-jpeg-dir=/usr/include/ && \
-    #curl iconv session
-    #docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache bcmath && \
-    docker-php-ext-install pdo_mysql pdo_sqlite mysqli gd exif intl xsl json soap dom zip opcache bcmath && \
-    docker-php-source extract && \
-    #curl -L -o /tmp/redis.zip https://github.com/phpredis/phpredis/archive/4.1.1.zip && \
-    #curl -L -o /tmp/apcu.zip http://pecl.php.net/get/apcu-5.1.12.tgz && \
-    #unzip /tmp/redis.zip && \
-    #tar xzvf /tmp/apcu.tgz && \
-    #rm -rf /tmp/redis.zip && \
-    #rm -rf /tmp/apcu.tgz && \
-    #mv phpredis-4.1.1 /usr/src/php/ext/redis && \
-    #mv apcu-5.1.12 /usr/src/php/ext/apcu && \
-    #docker-php-ext-install redis && \
-    #docker-php-ext-install apcu && \
-    #docker-php-source delete && \
     mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
     mkdir -p /run/nginx && \
@@ -197,12 +167,6 @@ RUN apk add --no-cache bash \
     mkdir -p /etc/letsencrypt/webrootauth && \
     #apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
 #    ln -s /usr/bin/php7 /usr/bin/php
-    cp /usr/src/php/php.ini-development /usr/local/etc/php/php.ini && \
-    pear config-set php_ini /usr/local/etc/php/php.ini && \
-    pecl install apcu && \
-    pecl install redis && \
-    pecl install xdebug && \
-    pecl install protobuf
 
 ADD conf/supervisord.conf /etc/supervisord.conf
 
@@ -220,32 +184,6 @@ ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD conf/nginx-site-my.conf /etc/nginx/sites-available/my.conf
 ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
-
-# tweak php-fpm config
-RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
-    echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
-    echo "post_max_size = 100M"  >> ${php_vars} &&\
-    echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
-    echo "memory_limit = 128M"  >> ${php_vars} && \
-    echo "date.timezone = \"Asia/Shanghai\""  >> ${php_vars} && \
-    sed -i \
-        -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
-        -e "s/pm.max_children = 5/pm.max_children = 4/g" \
-        -e "s/pm.start_servers = 2/pm.start_servers = 3/g" \
-        -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" \
-        -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" \
-        -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
-        -e "s/user = www-data/user = nginx/g" \
-        -e "s/group = www-data/group = nginx/g" \
-        -e "s/;listen.mode = 0660/listen.mode = 0666/g" \
-        -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/;listen.group = www-data/listen.group = nginx/g" \
-        -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
-        -e "s/^;clear_env = no$/clear_env = no/" \
-        ${fpm_conf}
-#    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
-#    find /etc/php7/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
-
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
