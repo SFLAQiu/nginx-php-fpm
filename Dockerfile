@@ -120,7 +120,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
       | sort -u \
   )" \
   && apk add --no-cache --virtual .nginx-rundeps $runDeps \
-  #&& apk del .build-deps \
+  && apk del .build-deps \
   && apk del .gettext \
   && mv /tmp/envsubst /usr/local/bin/ \
   \
